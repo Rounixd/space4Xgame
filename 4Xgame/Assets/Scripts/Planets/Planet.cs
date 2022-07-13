@@ -50,6 +50,9 @@ public class Planet
             case (int)planetRadiation.RADIATION_HIGH:
                 pRad = planetRadiation.RADIATION_HIGH;
                 break;
+            case (int)planetRadiation.RADIATION_EXTREME:
+                pRad = planetRadiation.RADIATION_EXTREME;
+                break;
         }
         return pRad;
     }
@@ -63,13 +66,13 @@ public class Planet
     }
 
     readonly int[] gravityWeightsSmall = new int[]
-    {0, 50, 20, 5 };
+    {50, 20, 5 };
 
     readonly int[] gravityWeightsMedium = new int[]
-    {0, 15, 50, 15};
+    {15, 50, 15};
 
     readonly int[] gravityWeightsLarge = new int[]
-    {0, 5, 20, 50};
+    {5, 20, 50};
 
     public planetGravity pGravity { get; protected set; }
 
