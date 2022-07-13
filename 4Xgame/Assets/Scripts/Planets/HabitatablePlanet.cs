@@ -31,12 +31,12 @@ public class HabitatablePlanet : Planet
         }
 
         if (pGravity == planetGravity.GRAVITY_SMALL)
-            numMinerals = Mathf.RoundToInt(numMinerals / 1.5f);
+            numMinerals = Mathf.RoundToInt(numMinerals * 0.5f);
         if (pGravity == planetGravity.GRAVITY_HIGH)
             numMinerals = Mathf.RoundToInt(numMinerals * 1.5f);
 
         if (pRadiation == planetRadiation.RADIATION_LOW)
-            numEnergy = Mathf.RoundToInt(numEnergy / 1.5f);
+            numEnergy = Mathf.RoundToInt(numEnergy * 0.5f);
         if (pRadiation == planetRadiation.RADIATION_HIGH)
             numEnergy = Mathf.RoundToInt(numEnergy * 1.5f);
         if (pRadiation == planetRadiation.RADIATION_EXTREME)
