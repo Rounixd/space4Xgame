@@ -15,6 +15,7 @@ public class HabitatablePlanet : Planet
         pSize = GeneratePlanetSize();
         pGravity = GenerateGravity(pSize);
         pRadiation = GenerateRadiation(radWeights);
+        pHabitability = GenerateHabitability();
         GenerateResources(resourceWeights);
 
     }

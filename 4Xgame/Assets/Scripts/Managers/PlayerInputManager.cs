@@ -41,6 +41,7 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] GameObject[] minerals;
     [SerializeField] GameObject[] energy;
     [SerializeField] GameObject[] food;
+    [SerializeField] GameObject[] habitability;
     [SerializeField] GameObject[] planets;
     [SerializeField] GameObject starType;
     [SerializeField] GameObject amOfPlanets;
@@ -53,6 +54,12 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] Sprite gravityLow;
     [SerializeField] Sprite gravityMedium;
     [SerializeField] Sprite gravityHigh;
+
+    [SerializeField] Sprite habitabilityNone;
+    [SerializeField] Sprite habitabilityLow;
+    [SerializeField] Sprite habitabilityMedium;
+    [SerializeField] Sprite habitabilityHigh;
+
 
     private void Awake()
     {
@@ -74,17 +81,17 @@ public class PlayerInputManager : MonoBehaviour
     //Do this when player clicks on a star
     public void ChangeFocusedSystem(GameObject go)
     {
-         foreach (GameObject p in planets)
-            p.SetActive(false);
+        foreach (GameObject p in planets)
+           p.SetActive(false);
 
-         focusedSystem = systemDictionary[go];
-         OpenWindow(starystemView);
+        focusedSystem = systemDictionary[go];
+        OpenWindow(starystemView);
 
-         starType.GetComponent<TextMeshProUGUI>().text = "Star type:" + focusedSystem;
+        starType.GetComponent<TextMeshProUGUI>().text = "Star type:" + focusedSystem;
         amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;   
 
-         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
-         {
+        for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
+        {
              planets[i].SetActive(true);
              planetType[i].GetComponent<TextMeshProUGUI>().text = "Type: " + focusedSystem.listOfPlanets[i].GetType().ToString();
              size[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].pSize.ToString();        
@@ -106,6 +113,22 @@ public class PlayerInputManager : MonoBehaviour
                     break;
                 case Planet.planetRadiation.RADIATION_EXTREME:
                     radiation[i].GetComponent<Image>().sprite = radiationExtreme;
+                    break;
+            }
+
+            switch (focusedSystem.listOfPlanets[i].pHabitability)
+            {
+                case Planet.planetHabitability.HABITABILITY_ZERO:
+                    habitability[i].GetComponent<Image>().sprite = habitabilityNone;
+                    break;
+                case Planet.planetHabitability.HABITABILITY_LOW:
+                    habitability[i].GetComponent<Image>().sprite = habitabilityLow;
+                    break;
+                case Planet.planetHabitability.HABITABILITY_MEDIUM:
+                    habitability[i].GetComponent<Image>().sprite = habitabilityMedium;
+                    break;
+                case Planet.planetHabitability.HABITABILITY_HIGH:
+                    habitability[i].GetComponent<Image>().sprite = habitabilityHigh;
                     break;
             }
 

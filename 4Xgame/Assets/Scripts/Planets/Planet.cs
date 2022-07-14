@@ -155,21 +155,76 @@ public class Planet
 
         if (pGravity == planetGravity.GRAVITY_SMALL)
             numMinerals = Mathf.RoundToInt(numMinerals * 0.5f);
-        if (pGravity == planetGravity.GRAVITY_HIGH)
+        else if (pGravity == planetGravity.GRAVITY_HIGH)
             numMinerals = Mathf.RoundToInt(numMinerals * 1.5f);
 
         if (pRadiation == planetRadiation.RADIATION_LOW)
             numEnergy = Mathf.RoundToInt(numEnergy * 0.5f);
-        if (pRadiation == planetRadiation.RADIATION_HIGH)
+        else if (pRadiation == planetRadiation.RADIATION_HIGH)
             numEnergy = Mathf.RoundToInt(numEnergy * 1.5f);
-        if (pRadiation == planetRadiation.RADIATION_EXTREME)
+        else if (pRadiation == planetRadiation.RADIATION_EXTREME)
             numEnergy = numEnergy * 2;
+
+        if (pHabitability == planetHabitability.HABITABILITY_ZERO) {
+            numFood = 0;
+            numEnergy = Mathf.RoundToInt(numEnergy * 1.25f);
+            numMinerals = Mathf.RoundToInt(numMinerals * 1.25f);
+        }
+        else if (pHabitability == planetHabitability.HABITABILITY_LOW)
+            numFood = Mathf.RoundToInt(numFood * 0.5f);
+        else if (pHabitability == planetHabitability.HABITABILITY_HIGH)
+            numFood = Mathf.RoundToInt(numFood * 1.5f);
         
     }
 
 
-#endregion GenerateResources
+    #endregion GenerateResources
+
+    #region GenerateHabitability
+
+    public planetHabitability pHabitability { get; protected set; }
+
+    public enum planetHabitability {
+       HABITABILITY_ZERO, HABITABILITY_LOW, HABITABILITY_MEDIUM, HABITABILITY_HIGH
+    }
+
+    int[] habWeightsRadLow = new int[] 
+    {0, 20,30,50};
+
+    int[] habWeightsRadMedium = new int[] 
+    {0, 30, 50, 20};
+
+    int[] habWeightsRadHigh = new int[] 
+    {0, 50, 30, 20};
+
+    protected planetHabitability GenerateHabitability()
+    {
+        planetHabitability tempHabitability = planetHabitability.HABITABILITY_ZERO;
+        
+        if (starType is BlackHole || this is BarrenPlanet || pRadiation == planetRadiation.RADIATION_EXTREME)
+            tempHabitability = planetHabitability.HABITABILITY_ZERO;
+
+        else { 
+            switch(pRadiation)
+            {
+                case planetRadiation.RADIATION_LOW:
+                    tempHabitability = (planetHabitability)WeightedProbability.CalculateWeightedProbability(habWeightsRadLow);
+                    break;
+                case planetRadiation.RADIATION_MEDIUM:
+                    tempHabitability = (planetHabitability)WeightedProbability.CalculateWeightedProbability(habWeightsRadMedium);
+                    break;
+                case planetRadiation.RADIATION_HIGH:
+                    tempHabitability = (planetHabitability)WeightedProbability.CalculateWeightedProbability(habWeightsRadHigh);
+                    break;
+            }
+        
+        }
+
+        return tempHabitability;
+        
+    }
 
 
+#endregion GenerateHabitability
 }
 

@@ -15,6 +15,7 @@ public class BarrenPlanet : Planet
         pSize = GeneratePlanetSize();
         pGravity = GenerateGravity(pSize);
         pRadiation = GenerateRadiation(radWeights);
+        pHabitability = GenerateHabitability();
         GenerateResources(resourceWeights);
 
     }
