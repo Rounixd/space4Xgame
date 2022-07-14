@@ -18,28 +18,17 @@ public class StarSystem
         GalaxyGeneration.starGenerated += GenerateStarsystem;
     }
 
-    protected virtual int[] GetRadWeights()
-    {
-        return null;
-    }
+    protected virtual int[] GetRadWeights() { return null; }
+    public virtual void GenerateStarsystem(GameObject go, StarSystem ss) {}
+
+    ////              ////
+    ////  GENERATION  ////
+    ////              ////
 
     enum planetTypes
     {
         PLANET_HABITATABLE, PLANET_BARREN
     }
-
-    public virtual void GenerateStarsystem(GameObject go, StarSystem ss)
-    {
-        //Unsubsribe immiedetly, so that the method won't be invoked when other starsystems are generated.
-        GalaxyGeneration.starGenerated -= GenerateStarsystem;
-
-        amountOfPlanets = Mathf.FloorToInt(WeightedProbability.CalculateNormalDistribution(MIN_PLANETS, MAX_PLANETS, 0.75f, 1.3f));
-    }
-
-
-    ////              ////
-    ////  GENERATION  ////
-    ////              ////
 
     protected List<Planet> GeneratePlanetTypes(int[] _planetWeights, int _amountOfPlanets)
     {

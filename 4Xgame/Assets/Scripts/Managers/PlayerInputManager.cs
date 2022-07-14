@@ -75,9 +75,7 @@ public class PlayerInputManager : MonoBehaviour
     public void ChangeFocusedSystem(GameObject go)
     {
          foreach (GameObject p in planets)
-         {
             p.SetActive(false);
-         }
 
          focusedSystem = systemDictionary[go];
          OpenWindow(starystemView);
@@ -141,13 +139,15 @@ public class PlayerInputManager : MonoBehaviour
 
     public void CloseLastOpenedWindow()
     {
-        GameObject lastWindow = openedWidnows[openedWidnows.Count - 1];
-        lastWindow.SetActive(false);
-        openedWidnows.Remove(lastWindow);
+        if (openedWidnows.Count > 0) {
+            GameObject lastWindow = openedWidnows[openedWidnows.Count - 1];
+            lastWindow.SetActive(false);
+            openedWidnows.Remove(lastWindow);
 
-        if (openedWidnows.Count == 0)
-            galaxyView.SetActive(true);
-        
+            if (openedWidnows.Count == 0)
+                galaxyView.SetActive(true);
+        }    
+       
     }
 
     public void CloseAllWindows()

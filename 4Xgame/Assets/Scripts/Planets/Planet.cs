@@ -26,6 +26,7 @@ public class Planet
     }
 
 #region GenerateRadiation
+
     public enum planetRadiation
     {
         RADIATION_LOW, RADIATION_MEDIUM, RADIATION_HIGH, RADIATION_EXTREME
