@@ -13,7 +13,7 @@ public class YellowDwarf : StarSystem
     readonly static int[] radiationWeights = new int[]
    {
         //RADIATION_LOW, RADIATION_MEDIUM, RADIATION_HIGH, RADIATION_EXTREME
-        40,40,15,5
+        40,40,20,0
 
    };
 

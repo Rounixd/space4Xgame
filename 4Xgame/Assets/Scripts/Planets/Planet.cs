@@ -132,31 +132,39 @@ public class Planet
         MINERALS, ENERGY, FOOD
     }
 
-    protected int[] resourceWeights = new int[]
-    {   //MINERALS, ENERGY, FOOD
-        25,25,35
-    };
-
-    protected planetResources GenerateResourceType(int[] rWeights)
+    protected void GenerateResources(int[] rWeights)
     {
 
-        planetResources resourceToAdd = planetResources.ENERGY;
-
-        switch (WeightedProbability.CalculateWeightedProbability(resourceWeights))
+        for (int i = 0; i <= pSize - 1; i++)
         {
-            case (int)planetResources.MINERALS:
-                resourceToAdd = planetResources.MINERALS;
-                break;
+            switch (WeightedProbability.CalculateWeightedProbability(rWeights))
+            {
+                case (int)planetResources.MINERALS:
+                    numMinerals++;
+                    break;
 
-            case (int)planetResources.ENERGY:
-                resourceToAdd = planetResources.ENERGY;
-                break;
+                case (int)planetResources.ENERGY:
+                    numEnergy++;
+                    break;
 
-            case (int)planetResources.FOOD: 
-                resourceToAdd = planetResources.FOOD;
-                break;
+                case (int)planetResources.FOOD:
+                    numFood++;
+                    break;
+            }
         }
-        return resourceToAdd;
+
+        if (pGravity == planetGravity.GRAVITY_SMALL)
+            numMinerals = Mathf.RoundToInt(numMinerals * 0.5f);
+        if (pGravity == planetGravity.GRAVITY_HIGH)
+            numMinerals = Mathf.RoundToInt(numMinerals * 1.5f);
+
+        if (pRadiation == planetRadiation.RADIATION_LOW)
+            numEnergy = Mathf.RoundToInt(numEnergy * 0.5f);
+        if (pRadiation == planetRadiation.RADIATION_HIGH)
+            numEnergy = Mathf.RoundToInt(numEnergy * 1.5f);
+        if (pRadiation == planetRadiation.RADIATION_EXTREME)
+            numEnergy = numEnergy * 2;
+        
     }
 
 
