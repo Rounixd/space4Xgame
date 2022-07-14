@@ -20,7 +20,7 @@ public class YellowDwarf : StarSystem
     public override void GenerateStarsystem(GameObject go, StarSystem ss)
     {
         GalaxyGeneration.starGenerated -= GenerateStarsystem;
-        amountOfPlanets = Mathf.FloorToInt(WeightedProbability.CalculateNormalDistribution(MIN_PLANETS, MAX_PLANETS, 0.75f, 1.3f));
+        amountOfPlanets = Mathf.FloorToInt(WeightedProbability.CalculateNormalDistribution(MIN_PLANETS, MAX_PLANETS, 0.75f, 1.35f));
         listOfPlanets = GeneratePlanetTypes(planetWeights, amountOfPlanets);
     }
 

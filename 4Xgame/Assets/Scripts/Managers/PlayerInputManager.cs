@@ -45,6 +45,7 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] GameObject[] planets;
     [SerializeField] GameObject starType;
     [SerializeField] GameObject amOfPlanets;
+    [SerializeField] GameObject mainStar;
 
     [SerializeField] Sprite radiationLow;
     [SerializeField] Sprite radiationMedium;
@@ -60,12 +61,20 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] Sprite habitabilityMedium;
     [SerializeField] Sprite habitabilityHigh;
 
+    [SerializeField] Sprite barrenPlanet;
+    [SerializeField] Sprite habitablePlanet;
+
+    [SerializeField] Sprite blackHole;
+    [SerializeField] Sprite redStar;
+    [SerializeField] Sprite yellowStar;
+
 
     private void Awake()
     {
         _instance = this;
         ColliderButton.systemClickedOn += ChangeFocusedSystem;
         GalaxyGeneration.starGenerated += AddToDictionary;
+        GalaxyGeneration.starGenerated += AssignStarsystemSprites;
     }
 
     public void AddToDictionary(GameObject go, StarSystem ss)
@@ -92,12 +101,12 @@ public class PlayerInputManager : MonoBehaviour
 
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
         {
-             planets[i].SetActive(true);
-             planetType[i].GetComponent<TextMeshProUGUI>().text = "Type: " + focusedSystem.listOfPlanets[i].GetType().ToString();
-             size[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].pSize.ToString();        
-             minerals[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
-             energy[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
-             food[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numFood.ToString();
+            planets[i].SetActive(true);
+            planetType[i].GetComponent<TextMeshProUGUI>().text = "Type: " + focusedSystem.listOfPlanets[i].GetType().ToString();
+            size[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].pSize.ToString();        
+            minerals[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
+            energy[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
+            food[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numFood.ToString();
 
 
             switch (focusedSystem.listOfPlanets[i].pRadiation)
@@ -144,7 +153,36 @@ public class PlayerInputManager : MonoBehaviour
                     gravity[i].GetComponent<Image>().sprite = gravityHigh;
                     break;
             }
-        } 
+
+            if (focusedSystem.listOfPlanets[i] is HabitatablePlanet)
+                planets[i].GetComponent<SpriteRenderer>().sprite = habitablePlanet;
+            if (focusedSystem.listOfPlanets[i] is BarrenPlanet)
+                planets[i].GetComponent<SpriteRenderer>().sprite = barrenPlanet;
+        }
+
+        switch (focusedSystem)
+        {
+            case BlackHole:
+                mainStar.GetComponent<SpriteRenderer>().sprite = blackHole;
+                break;
+            case RedDwarf:
+                mainStar.GetComponent<SpriteRenderer>().sprite = redStar;
+                break;
+            case YellowDwarf:
+                mainStar.GetComponent<SpriteRenderer>().sprite = yellowStar;
+                break;
+        }
+
+    }
+
+    void AssignStarsystemSprites(GameObject gObject, StarSystem system)
+    {
+            if (system is BlackHole)
+                gObject.GetComponent<SpriteRenderer>().sprite = blackHole;
+            else if (system is RedDwarf)
+                gObject.GetComponent<SpriteRenderer>().sprite = redStar;
+            else if (system is YellowDwarf)
+                gObject.GetComponent<SpriteRenderer>().sprite = yellowStar;
     }
 
     ///////                ////////
