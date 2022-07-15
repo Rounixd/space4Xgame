@@ -87,15 +87,17 @@ public class PlayerInputManager : MonoBehaviour
         planetDictionary.Add(go, planet);
     }
 
-    //Do this when player clicks on a star
+    //Update the starsystemview when player clicks on the star
     public void ChangeFocusedSystem(GameObject go)
     {
+        //Clear all the leftovers from the previous focused system, find the data of the new one.
         foreach (GameObject p in planets)
            p.SetActive(false);
 
         focusedSystem = systemDictionary[go];
         OpenWindow(starystemView);
 
+        // This whole thing updates the starsystem view. Possible candidate for a rerrite, since the code is kind of bad.
         starType.GetComponent<TextMeshProUGUI>().text = "Star type:" + focusedSystem;
         amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;   
 

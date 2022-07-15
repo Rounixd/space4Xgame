@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TurnManager : MonoBehaviour
 {
@@ -21,13 +22,13 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public Player currentPlayer;
+    Player currentPlayer;
 
 
     List<Player> players = new List<Player>();
     [SerializeField] Button nextTurnButton;
-    [SerializeField] Text turnIndex;
-    [SerializeField] Text playerIndex;
+    [SerializeField] TextMeshProUGUI turnIndex;
+    [SerializeField] TextMeshProUGUI playerIndex;
     [SerializeField] int amountOfHumanPlayers;
     [SerializeField] int amountOfAIPlayers;
 
@@ -44,6 +45,9 @@ public class TurnManager : MonoBehaviour
     {
         turnIndex.text = "Turn:" + 0;
         playerIndex.text = "Player:" + 0;
+
+        if (amountOfHumanPlayers == 0)
+            amountOfHumanPlayers++;
 
         for(int i = 0; i < amountOfHumanPlayers; i++)
         {

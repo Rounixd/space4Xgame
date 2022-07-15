@@ -34,6 +34,8 @@ public class Planet
 
     public planetRadiation pRadiation { get; protected set; }
 
+    //Radiation is based off on star the planet orbits. 
+    //radWeights are passed all the way from Starsystem children, so there is a potential are for code imporvement.
     protected planetRadiation GenerateRadiation(int[] radWeights)
     {
         planetRadiation pRad = planetRadiation.RADIATION_MEDIUM;
@@ -77,6 +79,8 @@ public class Planet
 
     public planetGravity pGravity { get; protected set; }
 
+    // Gravity is based off on planet size. 
+    // It assigns different weights for bottom, middle, and top 1/3 of the planet range.
     protected planetGravity GenerateGravity(int _planetSize)
     {
         planetGravity pGravity = planetGravity.GRAVITY_SMALL;
@@ -132,9 +136,10 @@ public class Planet
         MINERALS, ENERGY, FOOD
     }
 
+    //Generate resources. 
     protected void GenerateResources(int[] rWeights)
     {
-
+        //calculate the total number of resources.
         for (int i = 0; i <= pSize - 1; i++)
         {
             switch (WeightedProbability.CalculateWeightedProbability(rWeights))
@@ -153,6 +158,7 @@ public class Planet
             }
         }
 
+        //adjust num of resources based off on gravity, habitability, radiation, etc.
         if (pGravity == planetGravity.GRAVITY_SMALL)
             numMinerals = Mathf.RoundToInt(numMinerals * 0.5f);
         else if (pGravity == planetGravity.GRAVITY_HIGH)

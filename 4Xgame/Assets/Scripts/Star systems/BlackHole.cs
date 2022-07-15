@@ -17,6 +17,7 @@ public class BlackHole : StarSystem
 
     };
 
+    //Generate amount of planets and their type. Add them to a list.
     public override void GenerateStarsystem(GameObject go, StarSystem ss)
     {
         GalaxyGeneration.starGenerated -= GenerateStarsystem;

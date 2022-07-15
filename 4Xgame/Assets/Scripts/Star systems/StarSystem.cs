@@ -30,6 +30,7 @@ public class StarSystem
         PLANET_HABITATABLE, PLANET_BARREN
     }
 
+    //Generate planet type, return a list of thsose types as data so it can be saved in the children of the Starsystem class.
     protected List<Planet> GeneratePlanetTypes(int[] _planetWeights, int _amountOfPlanets)
     {
         List<Planet> planetList = new List<Planet>();
@@ -51,7 +52,8 @@ public class StarSystem
 
         }
 
-        planetGenerated?.Invoke(this.GetRadWeights());
+        //Send the rad weights from children to the planets, so they can generate radiation.
+        planetGenerated?.Invoke(GetRadWeights());
         return planetList;
     }
 

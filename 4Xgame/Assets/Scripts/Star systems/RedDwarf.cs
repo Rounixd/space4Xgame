@@ -13,10 +13,11 @@ public class RedDwarf : StarSystem
     readonly static int[] radiationWeights = new int[]
     {
         //RADIATION_LOW, RADIATION_MEDIUM, RADIATION_HIGH, RADIATION_EXTREME
-        15,40,40,5
+        20,40,40,0
 
     };
 
+    //Generate amount of planets and their type. Add them to a list.
     public override void GenerateStarsystem(GameObject go, StarSystem ss)
     {
         GalaxyGeneration.starGenerated -= GenerateStarsystem;
