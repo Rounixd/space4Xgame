@@ -34,14 +34,11 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] GameObject starystemView;
 
 
-    [SerializeField] GameObject[] planetType;
-    [SerializeField] GameObject[] size;
-    [SerializeField] GameObject[] gravity;
-    [SerializeField] GameObject[] radiation;
-    [SerializeField] GameObject[] minerals;
-    [SerializeField] GameObject[] energy;
-    [SerializeField] GameObject[] food;
-    [SerializeField] GameObject[] habitability;
+    [SerializeField] GameObject planetPrefab;
+
+    PlanetPrefabChildReferencer[] planetPrefabArray = new PlanetPrefabChildReferencer[3];
+
+
     [SerializeField] GameObject[] planets;
     [SerializeField] GameObject starType;
     [SerializeField] GameObject amOfPlanets;
@@ -92,7 +89,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         //Clear all the leftovers from the previous focused system, find the data of the new one.
         foreach (GameObject p in planets)
-           p.SetActive(false);
+            Destroy(p);
 
         focusedSystem = systemDictionary[go];
         OpenWindow(starystemView);
@@ -102,76 +99,80 @@ public class PlayerInputManager : MonoBehaviour
         amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;   
 
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
-        {
-            planets[i].SetActive(true);
-            planetType[i].GetComponent<TextMeshProUGUI>().text = "Type: " + focusedSystem.listOfPlanets[i].GetType().ToString();
-            size[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].pSize.ToString();        
-            minerals[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
-            energy[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
-            food[i].GetComponent<TextMeshProUGUI>().text = focusedSystem.listOfPlanets[i].numFood.ToString();
+        {   
+            planets[i] = Instantiate(planetPrefab, transform.position, Quaternion.identity, starystemView.transform);
+            planetPrefabArray[i] = planets[i].GetComponent<PlanetPrefabChildReferencer>();
+            RectTransform spawnedPlanet = planets[i].GetComponent<RectTransform>();
+            spawnedPlanet.anchoredPosition = new Vector2(-500 + (500*i), 85);
+            spawnedPlanet.localScale = new Vector3(100, 100, 100);
 
+
+            planetPrefabArray[i].size.text = focusedSystem.listOfPlanets[i].pSize.ToString();
+            planetPrefabArray[i].minerals.text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
+            planetPrefabArray[i].energy.text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
+            planetPrefabArray[i].food.text = focusedSystem.listOfPlanets[i].numFood.ToString();
 
             switch (focusedSystem.listOfPlanets[i].pRadiation)
             {
                 case Planet.planetRadiation.RADIATION_LOW:
-                    radiation[i].GetComponent<Image>().sprite = radiationLow;
+                    planetPrefabArray[i].radiation.sprite = radiationLow;
                     break;
                 case Planet.planetRadiation.RADIATION_MEDIUM:
-                    radiation[i].GetComponent<Image>().sprite = radiationMedium;
+                    planetPrefabArray[i].radiation.sprite = radiationMedium;
                     break;
                 case Planet.planetRadiation.RADIATION_HIGH:
-                    radiation[i].GetComponent<Image>().sprite = radiationHigh;
+                    planetPrefabArray[i].radiation.sprite = radiationHigh;
                     break;
                 case Planet.planetRadiation.RADIATION_EXTREME:
-                    radiation[i].GetComponent<Image>().sprite = radiationExtreme;
+                    planetPrefabArray[i].radiation.sprite = radiationExtreme;
                     break;
             }
 
             switch (focusedSystem.listOfPlanets[i].pHabitability)
             {
                 case Planet.planetHabitability.HABITABILITY_ZERO:
-                    habitability[i].GetComponent<Image>().sprite = habitabilityNone;
+                    planetPrefabArray[i].habitability.sprite = habitabilityNone;
                     break;
                 case Planet.planetHabitability.HABITABILITY_LOW:
-                    habitability[i].GetComponent<Image>().sprite = habitabilityLow;
+                    planetPrefabArray[i].habitability.sprite = habitabilityLow;
                     break;
                 case Planet.planetHabitability.HABITABILITY_MEDIUM:
-                    habitability[i].GetComponent<Image>().sprite = habitabilityMedium;
+                    planetPrefabArray[i].habitability.sprite = habitabilityMedium;
                     break;
                 case Planet.planetHabitability.HABITABILITY_HIGH:
-                    habitability[i].GetComponent<Image>().sprite = habitabilityHigh;
+                    planetPrefabArray[i].habitability.sprite = habitabilityHigh;
                     break;
             }
 
             switch (focusedSystem.listOfPlanets[i].pGravity)
             {
                 case Planet.planetGravity.GRAVITY_SMALL:
-                    gravity[i].GetComponent<Image>().sprite = gravityLow;
+                    planetPrefabArray[i].gravity.sprite = gravityLow;
                     break;
                 case Planet.planetGravity.GRAVITY_MEDIUM:
-                    gravity[i].GetComponent<Image>().sprite = gravityMedium;
+                     planetPrefabArray[i].gravity.sprite = gravityMedium;
                     break;
                 case Planet.planetGravity.GRAVITY_HIGH:
-                    gravity[i].GetComponent<Image>().sprite = gravityHigh;
+                    planetPrefabArray[i].gravity.sprite = gravityHigh;
                     break;
             }
 
             if (focusedSystem.listOfPlanets[i] is HabitatablePlanet)
-                planets[i].GetComponent<SpriteRenderer>().sprite = habitablePlanet;
+                planets[i].GetComponent<Image>().sprite = habitablePlanet;
             if (focusedSystem.listOfPlanets[i] is BarrenPlanet)
-                planets[i].GetComponent<SpriteRenderer>().sprite = barrenPlanet;
+                planets[i].GetComponent<Image>().sprite = barrenPlanet;
         }
 
         switch (focusedSystem)
         {
             case BlackHole:
-                mainStar.GetComponent<SpriteRenderer>().sprite = blackHole;
+                mainStar.GetComponent<Image>().sprite = blackHole;
                 break;
             case RedDwarf:
-                mainStar.GetComponent<SpriteRenderer>().sprite = redStar;
+                mainStar.GetComponent<Image>().sprite = redStar;
                 break;
             case YellowDwarf:
-                mainStar.GetComponent<SpriteRenderer>().sprite = yellowStar;
+                mainStar.GetComponent<Image>().sprite = yellowStar;
                 break;
         }
 

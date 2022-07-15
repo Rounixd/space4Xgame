@@ -66,21 +66,22 @@ public class TurnManager : MonoBehaviour
     {
         for (turnCount = 0; turnCount < Mathf.Infinity; turnCount++)
         {
+            turnIndex.text = "Turn:" + (turnCount + 1);
+
             for (playerCount = 0; playerCount < players.Count; playerCount++)
             {
                 currentPlayer = players[playerCount];
 
                 if (currentPlayer is Human)
                 {
-                    //HUMAN STUFF
-                    turnIndex.text = "Turn:" + turnCount;
-                    playerIndex.text = "Player:" + playerCount;
+                    //HUMAN STUFF             
+                    playerIndex.text = "Player:" + (playerCount + 1);
                     yield return new WaitForUIButtons(nextTurnButton);
                 }
                 else
                 {
                     //AI STUFF
-                    playerIndex.text = "Player:" + playerCount;
+                    playerIndex.text = "Player:" + (playerCount + 1);
                     yield return new WaitForSeconds(0.5f);     
 
                 }
