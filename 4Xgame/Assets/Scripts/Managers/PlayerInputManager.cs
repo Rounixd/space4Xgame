@@ -78,7 +78,7 @@ public class PlayerInputManager : MonoBehaviour
     private void Start()
     {
         ColonizeButton.planetColonized += HideUncolonizedPlanetButton;
-        TurnManager.onNewTurn += UpdatePopSliderValues;
+        TurnManager.onNewTurn += UpdateUIValues;
     }
 
     public void AddToDictionary(GameObject go, StarSystem ss)
@@ -94,31 +94,56 @@ public class PlayerInputManager : MonoBehaviour
         foreach (GameObject p in planets)
             p.SetActive(false);
         
+        //load data from the dictionary
         focusedSystem = systemDictionary[go];
         OpenWindow(starystemView);
-
-        // This whole thing updates the starsystem view. Possible candidate for a rerrite, since the code is kind of bad.
+   
         starType.GetComponent<TextMeshProUGUI>().text = "Star type:" + focusedSystem;
-        amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;   
+        amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;
 
+        UpdateUIValues();
+
+        //Change the star to fit the data
+        switch (focusedSystem)
+        {
+            case BlackHole:
+                mainStar.GetComponent<Image>().sprite = blackHole;
+                break;
+            case RedDwarf:
+                mainStar.GetComponent<Image>().sprite = redStar;
+                break;
+            case YellowDwarf:
+                mainStar.GetComponent<Image>().sprite = yellowStar;
+                break;
+        }
+
+    }
+
+    void UpdateUIValues()
+    {
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
         {
             PlanetPrefabChildReferencer currentPlanetPrefab = planetPrefabArray[i];
             Planet currentPlanet = focusedSystem.listOfPlanets[i];
 
+            //Update the sprites
             planets[i].SetActive(true);
             planetDictionary.Add(planets[i], currentPlanet);
             currentPlanetPrefab.size.text = currentPlanet.pSize.ToString();
             currentPlanetPrefab.minerals.text = currentPlanet.numMinerals.ToString();
             currentPlanetPrefab.energy.text = currentPlanet.numEnergy.ToString();
             currentPlanetPrefab.food.text = currentPlanet.numFood.ToString();
-            UpdatePopSliderValues();
 
+            currentPlanetPrefab.popsNum.text = currentPlanet.listOfPops.Count.ToString();
+            currentPlanetPrefab.popSlider.maxValue = currentPlanet.popGrowthNeeded;
+            currentPlanetPrefab.popSlider.value = currentPlanet.currentGrowth;
+
+            //Switch between the "uncolonized button" and the building buttons
+            //depending on if the planet is colonized
             if (currentPlanet.isColonized)
             {
                 currentPlanetPrefab.planetUncolonized.SetActive(false);
                 currentPlanetPrefab.planetOwned.SetActive(true);
-
             }
             else
             {
@@ -126,6 +151,22 @@ public class PlayerInputManager : MonoBehaviour
                 currentPlanetPrefab.planetOwned.SetActive(false);
             }
 
+            // Logic regarding the pop slider and the number showing how many turns left for the next pop
+            if (currentPlanet.growthSpeed + currentPlanet.currentGrowth != 0)
+            {
+                int tempNum = (currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) / currentPlanet.growthSpeed;
+
+                if (currentPlanet.growthSpeed + currentPlanet.currentGrowth < currentPlanet.popGrowthNeeded)
+                {
+                    if ((currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) % currentPlanet.growthSpeed != 0)
+                        currentPlanetPrefab.turnsTillNextPop.text = (tempNum + 1).ToString();
+                    else currentPlanetPrefab.turnsTillNextPop.text = tempNum.ToString();
+                }
+                else currentPlanetPrefab.turnsTillNextPop.text = "1";
+            }
+            else currentPlanetPrefab.turnsTillNextPop.text = Mathf.Infinity.ToString();
+
+            //Update radiation, habitability and gravity sprites
             switch (currentPlanet.pRadiation)
             {
                 case Planet.planetRadiation.RADIATION_LOW:
@@ -171,79 +212,25 @@ public class PlayerInputManager : MonoBehaviour
                     break;
             }
 
+            // Update the planet sprite
             if (currentPlanet is HabitatablePlanet)
                 currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = habitablePlanet;
             if (currentPlanet is BarrenPlanet)
                 currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = barrenPlanet;
-        }
 
-        switch (focusedSystem)
-        {
-            case BlackHole:
-                mainStar.GetComponent<Image>().sprite = blackHole;
-                break;
-            case RedDwarf:
-                mainStar.GetComponent<Image>().sprite = redStar;
-                break;
-            case YellowDwarf:
-                mainStar.GetComponent<Image>().sprite = yellowStar;
-                break;
-        }
-
-    }
-
-    void UpdatePopSliderValues()
-    {
-        for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
-        {
-            PlanetPrefabChildReferencer currentPlanetPrefab = planetPrefabArray[i];
-            Planet currentPlanet = focusedSystem.listOfPlanets[i];
-
-            currentPlanetPrefab.popsNum.text = currentPlanet.listOfPops.Count.ToString();
-            currentPlanetPrefab.popSlider.maxValue = currentPlanet.popGrowthNeeded;
-            currentPlanetPrefab.popSlider.value = currentPlanet.currentGrowth;
-
-            if (currentPlanet.growthSpeed + currentPlanet.currentGrowth != 0)
-            {
-                /*int tempModulo = currentPlanet.popGrowthNeeded % currentPlanet.growthSpeed;
-                int tempDividingCalc = currentPlanet.popGrowthNeeded / (currentPlanet.growthSpeed + currentPlanet.currentGrowth);
-
-                if (tempModulo >= 0 && tempDividingCalc != 0)
-                    currentPlanetPrefab.turnsTillNextPop.text = (tempDividingCalc + 1).ToString();
-
-                if (currentPlanet.popGrowthNeeded <= currentPlanet.growthSpeed + currentPlanet.currentGrowth)
-                    currentPlanetPrefab.turnsTillNextPop.text = "1";*/
-
-                if(currentPlanet.isColonized)
-                {
-                    Debug.Log(currentPlanet.popGrowthNeeded);
-                    Debug.Log(currentPlanet.growthSpeed);
-                    Debug.Log(currentPlanet.currentGrowth);
-                }
-
-                int tempNum = (currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) / currentPlanet.growthSpeed;
-
-                if (currentPlanet.growthSpeed + currentPlanet.currentGrowth < currentPlanet.popGrowthNeeded)
-                {
-                    if ((currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) % currentPlanet.growthSpeed != 0)
-                        currentPlanetPrefab.turnsTillNextPop.text = (tempNum + 1).ToString();
-                    else currentPlanetPrefab.turnsTillNextPop.text = tempNum.ToString();
-                }
-                else currentPlanetPrefab.turnsTillNextPop.text = "1";
-            }
-            else currentPlanetPrefab.turnsTillNextPop.text = Mathf.Infinity.ToString();
 
         }
     }
 
+    //This method updates the UI when player colonizes the planet
     void HideUncolonizedPlanetButton(GameObject go, Planet p)
     {
         go.GetComponentInParent<PlanetPrefabChildReferencer>().planetOwned.SetActive(true);
         go.GetComponentInParent<PlanetPrefabChildReferencer>().planetUncolonized.SetActive(false);
-        UpdatePopSliderValues();
+        UpdateUIValues();
 
     }
-
+    //This method assigns the sprites visible from the 'galaxy' view upon generation
     void AssignStarsystemSprites(GameObject gObject, StarSystem system)
     {
             if (system is BlackHole)

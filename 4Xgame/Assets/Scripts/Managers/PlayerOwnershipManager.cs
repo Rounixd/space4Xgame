@@ -28,7 +28,8 @@ public class PlayerOwnershipManager : MonoBehaviour
        
     }
 
-
+    //Beore checking the dictionary we have to check if a player even exists in it
+    //(and if not create him)
     public void AddToPlanetsOwnedDict(GameObject go, Planet planet)
     {
 

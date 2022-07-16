@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//Class holding all the references of all the objects of the planet prefab
 public class PlanetPrefabChildReferencer : MonoBehaviour
 {
     [SerializeField] public TextMeshProUGUI size;

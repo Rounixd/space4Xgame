@@ -52,9 +52,11 @@ public class TurnManager : MonoBehaviour
         turnIndex.text = "Turn:" + 0;
         playerIndex.text = "Player:" + 0;
 
+        //A safety check so the game wont crash
         if (amountOfHumanPlayers == 0)
             amountOfHumanPlayers++;
 
+        //Spawn player instances
         for(int i = 0; i < amountOfHumanPlayers; i++)
         {
             players.Add(new Human());

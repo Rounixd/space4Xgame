@@ -1215,7 +1215,7 @@ PrefabInstance:
       objectReference: {fileID: 1941044886}
     - target: {fileID: 7694231535415700270, guid: 2d8dcb1c4cdc5fe49a8d80ac50875c94, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: DoThisWhenClicked
       objectReference: {fileID: 0}
     - target: {fileID: 9116936117457647572, guid: 2d8dcb1c4cdc5fe49a8d80ac50875c94, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1493,7 +1493,7 @@ PrefabInstance:
       objectReference: {fileID: 740469562}
     - target: {fileID: 7694231535415700270, guid: 2d8dcb1c4cdc5fe49a8d80ac50875c94, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: DoThisWhenClicked
       objectReference: {fileID: 0}
     - target: {fileID: 9116936117457647572, guid: 2d8dcb1c4cdc5fe49a8d80ac50875c94, type: 3}
       propertyPath: m_AnchorMax.x
