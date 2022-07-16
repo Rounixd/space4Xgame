@@ -9,6 +9,12 @@ public class BarrenPlanet : Planet
         40,40,5
     };
 
+    public BarrenPlanet()
+    {
+        TurnManager.onNewTurn += GrowPops;
+        ColonizeButton.planetColonized = (go, _planet) => {_planet.isColonized = true; };
+    }
+
     public override void GeneratePlanetarySurface(int[] radWeights)
     {
         StarSystem.planetGenerated -= GeneratePlanetarySurface;

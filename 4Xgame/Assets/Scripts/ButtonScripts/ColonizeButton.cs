@@ -7,9 +7,8 @@ public class ColonizeButton : MonoBehaviour
     public delegate void OnPlanetColonisation(GameObject go, Planet p);
     public static OnPlanetColonisation planetColonized;
 
-    public void OnClick()
+    public void DoThisWhenClicked()
     {
-       planetColonized?.Invoke(this.gameObject ,PlayerInputManager.planetDictionary[transform.parent.gameObject]);
-       PlayerInputManager.planetDictionary[transform.parent.gameObject].isColonized = true;
+        planetColonized?.Invoke(this.gameObject, PlayerInputManager.planetDictionary[transform.parent.gameObject]);
     }
 }

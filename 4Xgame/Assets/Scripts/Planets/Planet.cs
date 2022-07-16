@@ -11,6 +11,7 @@ public class Planet
     public StarSystem starType { get; protected set; }
 
     public bool isColonized = false;
+    public List<Pop> listOfPops = new List<Pop>();
 
     protected const int MIN_SIZE = 8;
     protected const int MAX_SIZE = 22;
@@ -18,6 +19,9 @@ public class Planet
     public Planet()
     {
         StarSystem.planetGenerated += GeneratePlanetarySurface;
+
+        growthSpeed = 40;
+        popGrowthNeeded = 100;
     }
 
     public virtual void GeneratePlanetarySurface(int[] radWeights) { }
@@ -188,7 +192,7 @@ public class Planet
 
     #endregion GenerateResources
 
-    #region GenerateHabitability
+#region GenerateHabitability
 
     public planetHabitability pHabitability { get; protected set; }
 
@@ -233,6 +237,28 @@ public class Planet
     }
 
 
-#endregion GenerateHabitability
+    #endregion GenerateHabitability
+
+    #region PopManagement
+
+    public int growthSpeed { get; protected set; }
+    public int popGrowthNeeded { get; protected set; }
+    public int currentGrowth { get; protected set; }
+
+    protected void GrowPops()
+    {
+        if (isColonized)
+        {
+            currentGrowth += growthSpeed;
+
+            if (currentGrowth >= popGrowthNeeded)
+            {
+                currentGrowth -= popGrowthNeeded;
+                listOfPops.Add(new Pop());
+            }
+        }
+    }
+
+    #endregion PopManagement
 }
 

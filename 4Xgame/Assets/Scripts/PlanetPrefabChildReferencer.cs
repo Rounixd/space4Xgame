@@ -17,5 +17,9 @@ public class PlanetPrefabChildReferencer : MonoBehaviour
     [SerializeField] public GameObject planetOwned;
     [SerializeField] public GameObject planetUncolonized;
 
+    [SerializeField] public Slider popSlider;
+    [SerializeField] public TextMeshProUGUI popsNum;
+    [SerializeField] public TextMeshProUGUI turnsTillNextPop;
+
 }
 

@@ -22,14 +22,16 @@ public class PlayerOwnershipManager : MonoBehaviour
 
     public static Dictionary<Player, List<Planet>> planetsOwnedDictionary = new Dictionary<Player, List<Planet>>();
 
-    private void Awake()
+    private void Start()
     {
         ColonizeButton.planetColonized += AddToPlanetsOwnedDict;
+       
     }
 
 
     public void AddToPlanetsOwnedDict(GameObject go, Planet planet)
     {
+
         Player player = TurnManager.currentPlayer;
 
         if (planetsOwnedDictionary.ContainsKey(player))
@@ -43,6 +45,5 @@ public class PlayerOwnershipManager : MonoBehaviour
 
             planetsOwnedDictionary.Add(player, tempList);
         }
-        
     }
 }

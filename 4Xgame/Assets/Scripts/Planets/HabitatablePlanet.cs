@@ -9,6 +9,12 @@ public class HabitatablePlanet : Planet
         25,25,35
     };
 
+    public HabitatablePlanet()
+    {
+        TurnManager.onNewTurn += GrowPops;
+        ColonizeButton.planetColonized = (go, _planet) => {_planet.isColonized = true; };
+    }
+
     public override void GeneratePlanetarySurface(int[] radWeights)
     {
         StarSystem.planetGenerated -= GeneratePlanetarySurface;

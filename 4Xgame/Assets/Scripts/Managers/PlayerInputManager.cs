@@ -67,13 +67,18 @@ public class PlayerInputManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        GalaxyGeneration.starGenerated = (GameObject go, StarSystem ss) => { systemDictionary.Add(go, ss); };
-        ColonizeButton.planetColonized += HideUncolonizedPlanetButton;
+        GalaxyGeneration.starGenerated = (GameObject go, StarSystem ss) => { systemDictionary.Add(go, ss); };       
         GalaxyGeneration.starGenerated += AssignStarsystemSprites;
-        ColliderButton.systemClickedOn += ChangeFocusedSystem;
+        ColliderButton.systemClickedOn += ChangeFocusedSystem;      
 
         for (int i = 0; i < 3; i++)
             planetPrefabArray[i] = planets[i].GetComponent<PlanetPrefabChildReferencer>();
+    }
+
+    private void Start()
+    {
+        ColonizeButton.planetColonized += HideUncolonizedPlanetButton;
+        TurnManager.onNewTurn += UpdatePopSliderValues;
     }
 
     public void AddToDictionary(GameObject go, StarSystem ss)
@@ -98,73 +103,78 @@ public class PlayerInputManager : MonoBehaviour
 
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
         {
-            planets[i].SetActive(true);
-            planetDictionary.Add(planets[i], focusedSystem.listOfPlanets[i]);
-            planetPrefabArray[i].size.text = focusedSystem.listOfPlanets[i].pSize.ToString();
-            planetPrefabArray[i].minerals.text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
-            planetPrefabArray[i].energy.text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
-            planetPrefabArray[i].food.text = focusedSystem.listOfPlanets[i].numFood.ToString();
+            PlanetPrefabChildReferencer currentPlanetPrefab = planetPrefabArray[i];
+            Planet currentPlanet = focusedSystem.listOfPlanets[i];
 
-            if (focusedSystem.listOfPlanets[i].isColonized)
+            planets[i].SetActive(true);
+            planetDictionary.Add(planets[i], currentPlanet);
+            currentPlanetPrefab.size.text = currentPlanet.pSize.ToString();
+            currentPlanetPrefab.minerals.text = currentPlanet.numMinerals.ToString();
+            currentPlanetPrefab.energy.text = currentPlanet.numEnergy.ToString();
+            currentPlanetPrefab.food.text = currentPlanet.numFood.ToString();
+            UpdatePopSliderValues();
+
+            if (currentPlanet.isColonized)
             {
-                planetPrefabArray[i].planetUncolonized.SetActive(false);
-                planetPrefabArray[i].planetOwned.SetActive(true);
+                currentPlanetPrefab.planetUncolonized.SetActive(false);
+                currentPlanetPrefab.planetOwned.SetActive(true);
+
             }
             else
             {
-                planetPrefabArray[i].planetUncolonized.SetActive(true);
-                planetPrefabArray[i].planetOwned.SetActive(false);
+                currentPlanetPrefab.planetUncolonized.SetActive(true);
+                currentPlanetPrefab.planetOwned.SetActive(false);
             }
 
-            switch (focusedSystem.listOfPlanets[i].pRadiation)
+            switch (currentPlanet.pRadiation)
             {
                 case Planet.planetRadiation.RADIATION_LOW:
-                    planetPrefabArray[i].radiation.sprite = radiationLow;
+                    currentPlanetPrefab.radiation.sprite = radiationLow;
                     break;
                 case Planet.planetRadiation.RADIATION_MEDIUM:
-                    planetPrefabArray[i].radiation.sprite = radiationMedium;
+                    currentPlanetPrefab.radiation.sprite = radiationMedium;
                     break;
                 case Planet.planetRadiation.RADIATION_HIGH:
-                    planetPrefabArray[i].radiation.sprite = radiationHigh;
+                    currentPlanetPrefab.radiation.sprite = radiationHigh;
                     break;
                 case Planet.planetRadiation.RADIATION_EXTREME:
-                    planetPrefabArray[i].radiation.sprite = radiationExtreme;
+                    currentPlanetPrefab.radiation.sprite = radiationExtreme;
                     break;
             }
 
-            switch (focusedSystem.listOfPlanets[i].pHabitability)
+            switch (currentPlanet.pHabitability)
             {
                 case Planet.planetHabitability.HABITABILITY_ZERO:
-                    planetPrefabArray[i].habitability.sprite = habitabilityNone;
+                    currentPlanetPrefab.habitability.sprite = habitabilityNone;
                     break;
                 case Planet.planetHabitability.HABITABILITY_LOW:
-                    planetPrefabArray[i].habitability.sprite = habitabilityLow;
+                    currentPlanetPrefab.habitability.sprite = habitabilityLow;
                     break;
                 case Planet.planetHabitability.HABITABILITY_MEDIUM:
-                    planetPrefabArray[i].habitability.sprite = habitabilityMedium;
+                    currentPlanetPrefab.habitability.sprite = habitabilityMedium;
                     break;
                 case Planet.planetHabitability.HABITABILITY_HIGH:
-                    planetPrefabArray[i].habitability.sprite = habitabilityHigh;
+                    currentPlanetPrefab.habitability.sprite = habitabilityHigh;
                     break;
             }
 
-            switch (focusedSystem.listOfPlanets[i].pGravity)
+            switch (currentPlanet.pGravity)
             {
                 case Planet.planetGravity.GRAVITY_SMALL:
-                    planetPrefabArray[i].gravity.sprite = gravityLow;
+                    currentPlanetPrefab.gravity.sprite = gravityLow;
                     break;
                 case Planet.planetGravity.GRAVITY_MEDIUM:
-                     planetPrefabArray[i].gravity.sprite = gravityMedium;
+                    currentPlanetPrefab.gravity.sprite = gravityMedium;
                     break;
                 case Planet.planetGravity.GRAVITY_HIGH:
-                    planetPrefabArray[i].gravity.sprite = gravityHigh;
+                    currentPlanetPrefab.gravity.sprite = gravityHigh;
                     break;
             }
 
-            if (focusedSystem.listOfPlanets[i] is HabitatablePlanet)
-                planetPrefabArray[i].gameObject.GetComponent<Image>().sprite = habitablePlanet;
-            if (focusedSystem.listOfPlanets[i] is BarrenPlanet)
-                planetPrefabArray[i].gameObject.GetComponent<Image>().sprite = barrenPlanet;
+            if (currentPlanet is HabitatablePlanet)
+                currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = habitablePlanet;
+            if (currentPlanet is BarrenPlanet)
+                currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = barrenPlanet;
         }
 
         switch (focusedSystem)
@@ -182,6 +192,42 @@ public class PlayerInputManager : MonoBehaviour
 
     }
 
+    void UpdatePopSliderValues()
+    {
+        for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
+        {
+            PlanetPrefabChildReferencer currentPlanetPrefab = planetPrefabArray[i];
+            Planet currentPlanet = focusedSystem.listOfPlanets[i];
+
+            currentPlanetPrefab.popsNum.text = currentPlanet.listOfPops.Count.ToString();
+            currentPlanetPrefab.popSlider.maxValue = currentPlanet.popGrowthNeeded;
+            currentPlanetPrefab.popSlider.value = currentPlanet.currentGrowth;
+
+            if (currentPlanet.growthSpeed + currentPlanet.currentGrowth != 0)
+            {
+                int tempModulo = currentPlanet.popGrowthNeeded % currentPlanet.growthSpeed;
+                int tempDividingCalc = currentPlanet.popGrowthNeeded / (currentPlanet.growthSpeed + currentPlanet.currentGrowth);
+
+                if (tempModulo >= 0 && tempDividingCalc != 0)
+                    currentPlanetPrefab.turnsTillNextPop.text = (tempDividingCalc + 1).ToString();
+
+                if (currentPlanet.popGrowthNeeded <= currentPlanet.growthSpeed + currentPlanet.currentGrowth)
+                    currentPlanetPrefab.turnsTillNextPop.text = "1";
+            
+            }else currentPlanetPrefab.turnsTillNextPop.text = Mathf.Infinity.ToString();
+
+
+        }
+    }
+
+    void HideUncolonizedPlanetButton(GameObject go, Planet p)
+    {
+        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetOwned.SetActive(true);
+        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetUncolonized.SetActive(false);
+        UpdatePopSliderValues();
+
+    }
+
     void AssignStarsystemSprites(GameObject gObject, StarSystem system)
     {
             if (system is BlackHole)
@@ -192,12 +238,7 @@ public class PlayerInputManager : MonoBehaviour
                 gObject.GetComponent<SpriteRenderer>().sprite = yellowStar;
     }
 
-    void HideUncolonizedPlanetButton(GameObject go, Planet p)
-    {
-        p.isColonized = true;
-        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetOwned.SetActive(true);
-        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetUncolonized.SetActive(false);
-    }
+
     ///////                ////////
     /////// BUTTON METHODS ////////
     ///////                ////////
