@@ -205,17 +205,33 @@ public class PlayerInputManager : MonoBehaviour
 
             if (currentPlanet.growthSpeed + currentPlanet.currentGrowth != 0)
             {
-                int tempModulo = currentPlanet.popGrowthNeeded % currentPlanet.growthSpeed;
+                /*int tempModulo = currentPlanet.popGrowthNeeded % currentPlanet.growthSpeed;
                 int tempDividingCalc = currentPlanet.popGrowthNeeded / (currentPlanet.growthSpeed + currentPlanet.currentGrowth);
 
                 if (tempModulo >= 0 && tempDividingCalc != 0)
                     currentPlanetPrefab.turnsTillNextPop.text = (tempDividingCalc + 1).ToString();
 
                 if (currentPlanet.popGrowthNeeded <= currentPlanet.growthSpeed + currentPlanet.currentGrowth)
-                    currentPlanetPrefab.turnsTillNextPop.text = "1";
-            
-            }else currentPlanetPrefab.turnsTillNextPop.text = Mathf.Infinity.ToString();
+                    currentPlanetPrefab.turnsTillNextPop.text = "1";*/
 
+                if(currentPlanet.isColonized)
+                {
+                    Debug.Log(currentPlanet.popGrowthNeeded);
+                    Debug.Log(currentPlanet.growthSpeed);
+                    Debug.Log(currentPlanet.currentGrowth);
+                }
+
+                int tempNum = (currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) / currentPlanet.growthSpeed;
+
+                if (currentPlanet.growthSpeed + currentPlanet.currentGrowth < currentPlanet.popGrowthNeeded)
+                {
+                    if ((currentPlanet.popGrowthNeeded - currentPlanet.currentGrowth) % currentPlanet.growthSpeed != 0)
+                        currentPlanetPrefab.turnsTillNextPop.text = (tempNum + 1).ToString();
+                    else currentPlanetPrefab.turnsTillNextPop.text = tempNum.ToString();
+                }
+                else currentPlanetPrefab.turnsTillNextPop.text = "1";
+            }
+            else currentPlanetPrefab.turnsTillNextPop.text = Mathf.Infinity.ToString();
 
         }
     }

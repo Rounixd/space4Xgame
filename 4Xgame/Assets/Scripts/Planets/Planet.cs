@@ -20,8 +20,8 @@ public class Planet
     {
         StarSystem.planetGenerated += GeneratePlanetarySurface;
 
-        growthSpeed = 40;
-        popGrowthNeeded = 100;
+        growthSpeed = 4;
+        popGrowthNeeded = 10;
     }
 
     public virtual void GeneratePlanetarySurface(int[] radWeights) { }
