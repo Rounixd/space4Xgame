@@ -24,10 +24,9 @@ public class PlayerInputManager : MonoBehaviour
         }
     }
 
-    public Dictionary<GameObject, StarSystem> systemDictionary { get; private set; } = new Dictionary<GameObject, StarSystem>();
-    public Dictionary<GameObject, Planet> planetDictionary { get; private set; } = new Dictionary<GameObject, Planet>();
-    public StarSystem focusedSystem { get; private set; }
-    public Planet focusedPlanet { get; private set; }
+    public static Dictionary<GameObject, StarSystem> systemDictionary { get; private set; } = new Dictionary<GameObject, StarSystem>();
+    public static Dictionary<GameObject, Planet> planetDictionary { get; private set; } = new Dictionary<GameObject, Planet>();
+    public static StarSystem focusedSystem { get; private set; }
 
     List<GameObject> openedWidnows = new List<GameObject>();
     [SerializeField] GameObject galaxyView;
@@ -65,13 +64,16 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] Sprite redStar;
     [SerializeField] Sprite yellowStar;
 
-
     private void Awake()
     {
         _instance = this;
-        ColliderButton.systemClickedOn += ChangeFocusedSystem;
-        GalaxyGeneration.starGenerated += AddToDictionary;
+        GalaxyGeneration.starGenerated = (GameObject go, StarSystem ss) => { systemDictionary.Add(go, ss); };
+        ColonizeButton.planetColonized += HideUncolonizedPlanetButton;
         GalaxyGeneration.starGenerated += AssignStarsystemSprites;
+        ColliderButton.systemClickedOn += ChangeFocusedSystem;
+
+        for (int i = 0; i < 3; i++)
+            planetPrefabArray[i] = planets[i].GetComponent<PlanetPrefabChildReferencer>();
     }
 
     public void AddToDictionary(GameObject go, StarSystem ss)
@@ -79,18 +81,14 @@ public class PlayerInputManager : MonoBehaviour
         systemDictionary.Add(go, ss);
     }
 
-    public void AddToDictionary(GameObject go, Planet planet)
-    {
-        planetDictionary.Add(go, planet);
-    }
-
     //Update the starsystemview when player clicks on the star
     public void ChangeFocusedSystem(GameObject go)
     {
         //Clear all the leftovers from the previous focused system, find the data of the new one.
+        planetDictionary.Clear();
         foreach (GameObject p in planets)
-            Destroy(p);
-
+            p.SetActive(false);
+        
         focusedSystem = systemDictionary[go];
         OpenWindow(starystemView);
 
@@ -99,18 +97,24 @@ public class PlayerInputManager : MonoBehaviour
         amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;   
 
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
-        {   
-            planets[i] = Instantiate(planetPrefab, transform.position, Quaternion.identity, starystemView.transform);
-            planetPrefabArray[i] = planets[i].GetComponent<PlanetPrefabChildReferencer>();
-            RectTransform spawnedPlanet = planets[i].GetComponent<RectTransform>();
-            spawnedPlanet.anchoredPosition = new Vector2(-500 + (500*i), 85);
-            spawnedPlanet.localScale = new Vector3(100, 100, 100);
-
-
+        {
+            planets[i].SetActive(true);
+            planetDictionary.Add(planets[i], focusedSystem.listOfPlanets[i]);
             planetPrefabArray[i].size.text = focusedSystem.listOfPlanets[i].pSize.ToString();
             planetPrefabArray[i].minerals.text = focusedSystem.listOfPlanets[i].numMinerals.ToString();
             planetPrefabArray[i].energy.text = focusedSystem.listOfPlanets[i].numEnergy.ToString();
             planetPrefabArray[i].food.text = focusedSystem.listOfPlanets[i].numFood.ToString();
+
+            if (focusedSystem.listOfPlanets[i].isColonized)
+            {
+                planetPrefabArray[i].planetUncolonized.SetActive(false);
+                planetPrefabArray[i].planetOwned.SetActive(true);
+            }
+            else
+            {
+                planetPrefabArray[i].planetUncolonized.SetActive(true);
+                planetPrefabArray[i].planetOwned.SetActive(false);
+            }
 
             switch (focusedSystem.listOfPlanets[i].pRadiation)
             {
@@ -158,9 +162,9 @@ public class PlayerInputManager : MonoBehaviour
             }
 
             if (focusedSystem.listOfPlanets[i] is HabitatablePlanet)
-                planets[i].GetComponent<Image>().sprite = habitablePlanet;
+                planetPrefabArray[i].gameObject.GetComponent<Image>().sprite = habitablePlanet;
             if (focusedSystem.listOfPlanets[i] is BarrenPlanet)
-                planets[i].GetComponent<Image>().sprite = barrenPlanet;
+                planetPrefabArray[i].gameObject.GetComponent<Image>().sprite = barrenPlanet;
         }
 
         switch (focusedSystem)
@@ -188,6 +192,12 @@ public class PlayerInputManager : MonoBehaviour
                 gObject.GetComponent<SpriteRenderer>().sprite = yellowStar;
     }
 
+    void HideUncolonizedPlanetButton(GameObject go, Planet p)
+    {
+        p.isColonized = true;
+        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetOwned.SetActive(true);
+        go.GetComponentInParent<PlanetPrefabChildReferencer>().planetUncolonized.SetActive(false);
+    }
     ///////                ////////
     /////// BUTTON METHODS ////////
     ///////                ////////

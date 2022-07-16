@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class AI : Player
 {
+    override protected void ClaimPlanet()
+    {
 
+    }
 }

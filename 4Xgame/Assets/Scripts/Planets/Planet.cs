@@ -10,6 +10,8 @@ public class Planet
     public int pSize { get; protected set; }
     public StarSystem starType { get; protected set; }
 
+    public bool isColonized = false;
+
     protected const int MIN_SIZE = 8;
     protected const int MAX_SIZE = 22;
 

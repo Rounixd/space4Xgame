@@ -14,5 +14,8 @@ public class PlanetPrefabChildReferencer : MonoBehaviour
     [SerializeField] public TextMeshProUGUI food;
     [SerializeField] public Image habitability;
 
+    [SerializeField] public GameObject planetOwned;
+    [SerializeField] public GameObject planetUncolonized;
+
 }
 

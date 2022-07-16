@@ -4,5 +4,14 @@ using UnityEngine;
 
 public class Human : Player
 {
+    public Human()
+    {
+
+    }
+
+    override protected void ClaimPlanet()
+    {
+
+    }
 
 }

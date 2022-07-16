@@ -8,6 +8,12 @@ public class TurnManager : MonoBehaviour
 {
     private static TurnManager _instance;
 
+    public delegate Player OnNewPlayer(Player p);
+    public delegate void OnNewTurn();
+
+    public static OnNewPlayer onNewPlayer;
+    public static OnNewTurn onNewTurn;
+
     public static TurnManager Instance
     {
         get
@@ -22,7 +28,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    Player currentPlayer;
+    public static Player currentPlayer { get; private set; }
 
 
     List<Player> players = new List<Player>();
@@ -85,7 +91,12 @@ public class TurnManager : MonoBehaviour
                     yield return new WaitForSeconds(0.5f);     
 
                 }
+
+                onNewPlayer?.Invoke(players[playerCount]);
             }
+
+            onNewTurn?.Invoke();
+
         }
     }
 }
