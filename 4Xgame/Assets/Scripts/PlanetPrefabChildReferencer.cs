@@ -22,5 +22,21 @@ public class PlanetPrefabChildReferencer : MonoBehaviour
     [SerializeField] public TextMeshProUGUI popsNum;
     [SerializeField] public TextMeshProUGUI turnsTillNextPop;
 
+    [SerializeField] public GameObject buildingsView;
+    [SerializeField] public GameObject employmentView;
+
+
+    public void SwitchToEmploymentView()
+    {
+        buildingsView.SetActive(false);
+        employmentView.SetActive(true);
+    }
+
+    public void SwitchToBuildingsView()
+    {
+        buildingsView.SetActive(true);
+        employmentView.SetActive(false);
+    }
 }
+
 
