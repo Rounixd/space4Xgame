@@ -10,9 +10,6 @@ public class PlanetPrefabChildReferencer : MonoBehaviour
     [SerializeField] public TextMeshProUGUI size;
     [SerializeField] public Image gravity;
     [SerializeField] public Image radiation;
-    [SerializeField] public TextMeshProUGUI minerals;
-    [SerializeField] public TextMeshProUGUI energy;
-    [SerializeField] public TextMeshProUGUI food;
     [SerializeField] public Image habitability;
 
     [SerializeField] public GameObject planetOwned;
@@ -24,6 +21,10 @@ public class PlanetPrefabChildReferencer : MonoBehaviour
 
     [SerializeField] public GameObject buildingsView;
     [SerializeField] public GameObject employmentView;
+
+    [SerializeField] public Image planetImage;
+
+    [SerializeField] public GameObject[] buildingSlots;
 
 
     public void SwitchToEmploymentView()

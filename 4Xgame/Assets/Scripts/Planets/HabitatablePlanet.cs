@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class HabitatablePlanet : Planet
 {
-    protected int[] resourceWeights = new int[]
-    {   //MINERALS, ENERGY, FOOD
-        25,25,35
-    };
 
     public HabitatablePlanet()
     {
@@ -22,7 +18,6 @@ public class HabitatablePlanet : Planet
         pGravity = GenerateGravity(pSize);
         pRadiation = GenerateRadiation(radWeights);
         pHabitability = GenerateHabitability(); //Habitability gen is based off on radiation
-        GenerateResources(resourceWeights); // this always at the end
-
+        
     }
 }

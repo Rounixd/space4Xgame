@@ -13,8 +13,12 @@ public class Planet
     public bool isColonized = false;
     public List<Pop> listOfPops = new List<Pop>();
 
-    protected const int MIN_SIZE = 8;
-    protected const int MAX_SIZE = 22;
+    protected const int MIN_SIZE = 3;
+    protected const int MAX_SIZE = 8;
+    protected const float PLANET_MEDIAN = 5f;
+    protected const float SIGMA = 0.2f;
+
+    public int maxPops;
 
     public Planet()
     {
@@ -26,12 +30,18 @@ public class Planet
 
     public virtual void GeneratePlanetarySurface(int[] radWeights) { }
 
+    #region GenerateSize
+
     protected int GeneratePlanetSize()
-    {
-        return Mathf.RoundToInt(WeightedProbability.CalculateNormalDistribution(MIN_SIZE, MAX_SIZE, 3f, 12f));
+    { 
+        int temp = Mathf.RoundToInt(WeightedProbability.CalculateNormalDistribution(MIN_SIZE, MAX_SIZE, PLANET_MEDIAN, PLANET_MEDIAN));
+        maxPops = temp * 2 + Random.Range(temp/2, temp/2+1);
+        return temp;
     }
 
-#region GenerateRadiation
+    #endregion GenerateSize
+
+    #region GenerateRadiation
 
     public enum planetRadiation
     {
@@ -131,67 +141,6 @@ public class Planet
     }
 #endregion GravityGeneration
 
-#region GenerateResources
-
-    public int numMinerals { get; protected set; } //0
-    public int numFood { get; protected set; } //1
-    public int numEnergy { get; protected set; } //2
-
-    public enum planetResources
-    {
-        MINERALS, ENERGY, FOOD
-    }
-
-    //Generate resources. 
-    protected void GenerateResources(int[] rWeights)
-    {
-        //calculate the total number of resources.
-        for (int i = 0; i <= pSize - 1; i++)
-        {
-            switch (WeightedProbability.CalculateWeightedProbability(rWeights))
-            {
-                case (int)planetResources.MINERALS:
-                    numMinerals++;
-                    break;
-
-                case (int)planetResources.ENERGY:
-                    numEnergy++;
-                    break;
-
-                case (int)planetResources.FOOD:
-                    numFood++;
-                    break;
-            }
-        }
-
-        //adjust num of resources based off on gravity, habitability, radiation, etc.
-        if (pGravity == planetGravity.GRAVITY_SMALL)
-            numMinerals = Mathf.RoundToInt(numMinerals * 0.5f);
-        else if (pGravity == planetGravity.GRAVITY_HIGH)
-            numMinerals = Mathf.RoundToInt(numMinerals * 1.5f);
-
-        if (pRadiation == planetRadiation.RADIATION_LOW)
-            numEnergy = Mathf.RoundToInt(numEnergy * 0.5f);
-        else if (pRadiation == planetRadiation.RADIATION_HIGH)
-            numEnergy = Mathf.RoundToInt(numEnergy * 1.5f);
-        else if (pRadiation == planetRadiation.RADIATION_EXTREME)
-            numEnergy = numEnergy * 2;
-
-        if (pHabitability == planetHabitability.HABITABILITY_ZERO) {
-            numFood = 0;
-            numEnergy = Mathf.RoundToInt(numEnergy * 1.25f);
-            numMinerals = Mathf.RoundToInt(numMinerals * 1.25f);
-        }
-        else if (pHabitability == planetHabitability.HABITABILITY_LOW)
-            numFood = Mathf.RoundToInt(numFood * 0.5f);
-        else if (pHabitability == planetHabitability.HABITABILITY_HIGH)
-            numFood = Mathf.RoundToInt(numFood * 1.5f);
-        
-    }
-
-
-    #endregion GenerateResources
-
 #region GenerateHabitability
 
     public planetHabitability pHabitability { get; protected set; }
@@ -247,7 +196,7 @@ public class Planet
 
     protected void GrowPops()
     {
-        if (isColonized)
+        if (isColonized && listOfPops.Count < maxPops)
         {
             currentGrowth += growthSpeed;
 

@@ -69,10 +69,12 @@ public class PlayerInputManager : MonoBehaviour
         _instance = this;
         GalaxyGeneration.starGenerated = (GameObject go, StarSystem ss) => { systemDictionary.Add(go, ss); };       
         GalaxyGeneration.starGenerated += AssignStarsystemSprites;
-        ColliderButton.systemClickedOn += ChangeFocusedSystem;      
+        ColliderButton.systemClickedOn += ChangeFocusedSystem;
 
         for (int i = 0; i < 3; i++)
+        {
             planetPrefabArray[i] = planets[i].GetComponent<PlanetPrefabChildReferencer>();
+        }
     }
 
     private void Start()
@@ -97,9 +99,6 @@ public class PlayerInputManager : MonoBehaviour
         //load data from the dictionary
         focusedSystem = systemDictionary[go];
         OpenWindow(starystemView);
-   
-        starType.GetComponent<TextMeshProUGUI>().text = "Star type:" + focusedSystem;
-        amOfPlanets.GetComponent<TextMeshProUGUI>().text = "Amount of planets: " + focusedSystem.amountOfPlanets;
 
         for (int i = 0; i < focusedSystem.amountOfPlanets; i++)
         {
@@ -110,10 +109,14 @@ public class PlayerInputManager : MonoBehaviour
             planets[i].SetActive(true);
             planetDictionary.Add(planets[i], currentPlanet);
             currentPlanetPrefab.size.text = currentPlanet.pSize.ToString();
-            currentPlanetPrefab.minerals.text = currentPlanet.numMinerals.ToString();
-            currentPlanetPrefab.energy.text = currentPlanet.numEnergy.ToString();
-            currentPlanetPrefab.food.text = currentPlanet.numFood.ToString();
             UpdatePopSliderValues();
+
+            //Clear the building slots from the prev planet and then activate new ones based on the size of the planet
+            for (int j = 0; j < currentPlanetPrefab.buildingSlots.Length; j++)
+                currentPlanetPrefab.buildingSlots[j].SetActive(false);
+
+            for (int j = 0; j < currentPlanet.pSize; j++)
+                currentPlanetPrefab.buildingSlots[j].SetActive(true);
 
             //Switch between the "uncolonized button" and the building buttons
             //depending on if the planet is colonized
@@ -176,9 +179,9 @@ public class PlayerInputManager : MonoBehaviour
 
             // Update the planet sprite
             if (currentPlanet is HabitatablePlanet)
-                currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = habitablePlanet;
+                currentPlanetPrefab.planetImage.sprite = habitablePlanet;
             if (currentPlanet is BarrenPlanet)
-                currentPlanetPrefab.gameObject.GetComponent<Image>().sprite = barrenPlanet;
+                currentPlanetPrefab.planetImage.sprite = barrenPlanet;
 
             //Change the star to fit the data
             switch (focusedSystem)
@@ -205,7 +208,7 @@ public class PlayerInputManager : MonoBehaviour
             PlanetPrefabChildReferencer currentPlanetPrefab = planetPrefabArray[i];
             Planet currentPlanet = focusedSystem.listOfPlanets[i];
 
-            currentPlanetPrefab.popsNum.text = currentPlanet.listOfPops.Count.ToString();
+            currentPlanetPrefab.popsNum.text = currentPlanet.listOfPops.Count.ToString() + "/" + currentPlanet.maxPops;
             currentPlanetPrefab.popSlider.maxValue = currentPlanet.popGrowthNeeded;
             currentPlanetPrefab.popSlider.value = currentPlanet.currentGrowth;
 
