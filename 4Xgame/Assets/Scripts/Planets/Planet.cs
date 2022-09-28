@@ -35,7 +35,7 @@ public class Planet
     protected int GeneratePlanetSize()
     { 
         int temp = Mathf.RoundToInt(WeightedProbability.CalculateNormalDistribution(MIN_SIZE, MAX_SIZE, PLANET_MEDIAN, PLANET_MEDIAN));
-        maxPops = temp * 2 + Random.Range(temp/2, temp/2+1);
+        maxPops = temp * 2 + Random.Range(1, temp/2+1);
         return temp;
     }
 
